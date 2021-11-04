@@ -4,7 +4,20 @@
 #include <map>
 #include <queue>
 using namespace std;
+
+auto it = [](const Puzzle* a, const Puzzle* b) {
+
+    if (a->h_cost + a->g_cost > b->h_cost + a->g_cost) {
+        return true;
+    }
+    else {
+        return false;
+    }
+
+};
 map<Puzzle*, bool> visited;
+priority_queue <Puzzle*, vector<Puzzle*>, decltype(it)> Q(it);
+
 bool isVisited(Puzzle* node) {
     if (visited[node] == true) {
         return true;
@@ -54,11 +67,13 @@ int main()
     int choice;
     cout << "Choose algorithm, 1 for Uniform Cost Search, 2 for A* Misplaced Tile, 3 for A* Manhattan Dist\n";
     cin >> choice;
-    cout << choice;
+    //Q.push(puzzle);
+    //cout << choice;
+
     //puzzle->printPuzzle();
     //cout<<puzzle->findEmpty();
     //cout << goal(puzzle)<<"\n";
-
+    
     //if (isVisited(puzzle)) {
     //    cout << " Has been visited";
     //}
