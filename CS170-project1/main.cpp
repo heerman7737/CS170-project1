@@ -2,28 +2,39 @@
 #include <vector>
 #include "puzzle.h"
 using namespace std;
+bool goal(vector<vector<int>> a) {
+    bool result = true;
+    vector<vector<int>> pg{ {1,2,3},{4,5,6},{7,8,0} };
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (a[i][j] != pg[i][j]) {
+                result = false;
+                break;
+            }
+        }
+    }
+    return result;
+}
+Puzzle puzzle;
 int main()
 {
-    
 
-    vector<int> tile;
+    vector<vector<int>> tile;
     int temp;
     cout << "Welcome to my 8-puzzle solver.\n";
     cout << "Enter your puzzle in the following format: 0 1 2 3 4 5 6 7 8 9\n";
-    for (int i = 0; i < 9; i++) {
-        cin >> temp;
-        tile.push_back(temp);
+    for (int i = 0; i < 3; i++) {
+        tile.push_back(vector<int>());
+        for (int j = 0; j < 3; j++) {
+            cin >> temp;
+            tile[i].push_back(temp);
+        }
     }
-    //for (int i = 0; i < 9; i++) {
-    //    cout << tile[i]<<" ";
-    //}
-    int choice;
-    cout << "Choose your algorithm:\n";
-    cout << "Enter 1. Uniform Cost Search\n";
-    cout << "Enter 2. A* with Misplaced Tile Heuristics\n";
-    cout << "Enter 3. A* with Manhattan Distance Heuristics\n";
-    cin >> choice;
-    //cout << choice;
+    puzzle.setPuzzle(tile);
+    vector<char> all_move = puzzle.move();
+    puzzle.printPuzzle();
+    for (int i = 0; i < all_move.size(); i++) {
+        cout << all_move[i] << " ";
+    }
     return 0;
 }
-
