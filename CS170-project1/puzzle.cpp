@@ -5,12 +5,27 @@ using namespace std;
 Puzzle::Puzzle() {
     state = {};
     cost = 0;
-    prev = 0;
-    depth = 0;
+    h_cost = 0;
+    g_cost = 0;
     parent = NULL;
 
 }
+Puzzle::Puzzle(vector<int> a) {
+    state = a;
+    cost = 0;
+    h_cost = 0;
+    g_cost = 0;
+    parent = NULL;
+}
 
+Puzzle::Puzzle(Puzzle* p) {
+    state = p->state;
+    cost = p->cost;
+    h_cost = p->h_cost;
+    g_cost = p->g_cost;
+    parent = p;
+
+}
 void Puzzle::setPuzzle(vector<int> tile) {
     for (int i = 0; i < 9; i++) {
         state.push_back(tile[i]);
@@ -50,55 +65,67 @@ bool Puzzle::compare(Puzzle* p1, Puzzle* p2) {
     return result;
 }
 
-Puzzle* Puzzle::move_up(Puzzle* node) {
+Puzzle* Puzzle::move_up() {
 
-    if (node->findEmpty() > 2) {
+    if (this->findEmpty() > 2) {
         Puzzle* result = new Puzzle;
-        result->state = node->state;
+        result->state = this->state;
         int pos = result->findEmpty();
         int temp = result->state[pos - 3];
         //cout << "temp:"<<temp<<"\n";
         result->state[pos - 3] = result->state[pos];
         result->state[pos] = temp;
+        result->g_cost = this->g_cost + 1;
+        result->h_cost = this->h_cost;
+        result->cost = this->cost;
         return result;
     }
     return NULL;
 }
-Puzzle* Puzzle::move_down(Puzzle* node) {
-    if (node->findEmpty() < 6) {
+Puzzle* Puzzle::move_down() {
+    if (this->findEmpty() < 6) {
         Puzzle* result = new Puzzle;
-        result->state = node->state;
+        result->state = this->state;
         int pos = result->findEmpty();
         int temp = result->state[pos + 3];
         //cout << "temp:"<<temp<<"\n";
         result->state[pos + 3] = result->state[pos];
         result->state[pos] = temp;
+        result->g_cost = this->g_cost + 1;
+        result->h_cost = this->h_cost;
+        result->cost = this->cost;
         return result;
     }
     return NULL;
 }
-Puzzle* Puzzle::move_left(Puzzle* node) {
-    if (node->findEmpty() % 3 > 0) {
+Puzzle* Puzzle::move_left() {
+    if (this->findEmpty() % 3 > 0) {
         Puzzle* result = new Puzzle;
-        result->state = node->state;
+        result->state = this->state;
         int pos = result->findEmpty();
         int temp = result->state[pos - 1];
         //cout << "temp:"<<temp<<"\n";
         result->state[pos - 1] = result->state[pos];
         result->state[pos] = temp;
+        result->g_cost = this->g_cost + 1;
+        result->h_cost = this->h_cost;
+        result->cost = this->cost;
         return result;
     }
     return NULL;
 }
-Puzzle* Puzzle::move_right(Puzzle* node) {
-    if (node->findEmpty() % 3 < 2) {
+Puzzle* Puzzle::move_right() {
+    if (this->findEmpty() % 3 < 2) {
         Puzzle* result = new Puzzle;
-        result->state = node->state;
+        result->state = this->state;
         int pos = result->findEmpty();
         int temp = result->state[pos + 1];
         //cout << "temp:"<<temp<<"\n";
         result->state[pos + 1] = result->state[pos];
         result->state[pos] = temp;
+        result->g_cost = this->g_cost + 1;
+        result->h_cost = this->h_cost;
+        result->cost = this->cost;
         return result;
     }
     return NULL;

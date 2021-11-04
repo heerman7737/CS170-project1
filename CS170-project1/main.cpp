@@ -41,12 +41,34 @@ int manhattan(vector<int> a)
     return 0;
 }
 void general_search(Puzzle* root, int algorithm) {
-    priority_queue<Puzzle*> q;
-    q.push(root);
-    while (1) {
-        if (q.empty()) {
-            cout << "Failure";
+
+    visited.insert(pair<Puzzle*, bool>(root, true));
+    Q.push(root);
+    //Puzzle* top = new Puzzle(Q.top());
+    //top->printPuzzle();
+    //cout << "\n Visited:" << isVisited(root);
+    Puzzle* top = new Puzzle(Q.top());
+    vector<Puzzle*> moves;
+    while (!Q.empty()) {
+        top = Q.top();
+        cout << "Depth " << top->g_cost;
+        if (goal(top)) {
+            top->printPuzzle();
+            cout << "Found";
+            Q.pop();
             break;
+        }
+        else {
+            Q.pop();
+            if (algorithm == 1) {
+
+            }
+            else if (algorithm == 2) {
+
+            }
+            else if (algorithm == 3) {
+
+            }
         }
 
     }
@@ -54,6 +76,7 @@ void general_search(Puzzle* root, int algorithm) {
 int main()
 {
     Puzzle* puzzle = new Puzzle;
+    //Puzzle* gol;
     vector<int> tile;
     Puzzle* gol = new Puzzle;
     int temp;
@@ -67,6 +90,7 @@ int main()
     int choice;
     cout << "Choose algorithm, 1 for Uniform Cost Search, 2 for A* Misplaced Tile, 3 for A* Manhattan Dist\n";
     cin >> choice;
+    general_search(puzzle, choice);
     //Q.push(puzzle);
     //cout << choice;
 
@@ -77,9 +101,9 @@ int main()
     //if (isVisited(puzzle)) {
     //    cout << " Has been visited";
     //}
-    //gol->move_up(puzzle)->printPuzzle();
-    //gol->move_down(puzzle)->printPuzzle();
-    //gol->move_left(puzzle)->printPuzzle();
-    //gol->move_right(puzzle)->printPuzzle();
+    //gol->move_up()->printPuzzle();
+    //gol->move_down()->printPuzzle();
+    //gol->move_left()->printPuzzle();
+    //gol->move_right()->printPuzzle();
     return 0;
 }
