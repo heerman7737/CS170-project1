@@ -3,44 +3,103 @@
 #include <iostream>
 using namespace std;
 Puzzle::Puzzle() {
-
+    state = {};
     cost = 0;
+    prev = 0;
+    depth = 0;
     parent = NULL;
+
 }
 
-void Puzzle::setPuzzle(vector<vector<int>> tile) {
-    for (int i = 0; i < 3; i++) {
-        state.push_back(vector<int>());
-        for (int j = 0; j < 3; j++) {
-            state[i].push_back(tile[i][j]);
-        }
+void Puzzle::setPuzzle(vector<int> tile) {
+    for (int i = 0; i < 9; i++) {
+        state.push_back(tile[i]);
     }
 }
 void Puzzle::printPuzzle() {
-    vector<vector<int>> result;
-    for (int i = 0; i < 3; i++) {
+    if (this != NULL) {
+        int temp = 0;
         for (int j = 0; j < 3; j++) {
-            cout << state[i][j] << " ";
+            cout << "\n";
+            for (int i = temp * 3; i < 3 * (temp + 1); i++) {
+                cout << state[i] << " ";
+            }
+            temp++;
         }
+        cout << "\n";
     }
 }
 
-vector<char> Puzzle::move() {
-    vector<char> result;
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (state[i][j] == 0) {
-                if (i == 0 && j == 0) result = { 'l','u' };
-                if (i == 0 && j == 1) result = { 'r','l','u' };
-                if (i == 0 && j == 2) result = { 'r','u' };
-                if (i == 1 && j == 0) result = { 'd','u','l' };
-                if (i == 1 && j == 1) result = { 'd','u','l','u' };
-                if (i == 1 && j == 2) result = { 'd','u','r' };
-                if (i == 2 && j == 0) result = { 'd','l' };
-                if (i == 2 && j == 1) result = { 'd','r','l' };
-                if (i == 2 && j == 2) result = { 'd','r' };
-            }
+int Puzzle::findEmpty() {
+    for (int i = 0; i < 9; i++) {
+        if (state[i] == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool Puzzle::compare(Puzzle* p1, Puzzle* p2) {
+    bool result = true;
+    for (int i = 0; i < 9; i++) {
+        if (p1->state[i] != p2->state[i]) {
+            result = false;
+            break;
         }
     }
     return result;
+}
+
+Puzzle* Puzzle::move_up(Puzzle* node) {
+
+    if (node->findEmpty() > 2) {
+        Puzzle* result = new Puzzle;
+        result->state = node->state;
+        int pos = result->findEmpty();
+        int temp = result->state[pos - 3];
+        //cout << "temp:"<<temp<<"\n";
+        result->state[pos - 3] = result->state[pos];
+        result->state[pos] = temp;
+        return result;
+    }
+    return NULL;
+}
+Puzzle* Puzzle::move_down(Puzzle* node) {
+    if (node->findEmpty() < 6) {
+        Puzzle* result = new Puzzle;
+        result->state = node->state;
+        int pos = result->findEmpty();
+        int temp = result->state[pos + 3];
+        //cout << "temp:"<<temp<<"\n";
+        result->state[pos + 3] = result->state[pos];
+        result->state[pos] = temp;
+        return result;
+    }
+    return NULL;
+}
+Puzzle* Puzzle::move_left(Puzzle* node) {
+    if (node->findEmpty() % 3 > 0) {
+        Puzzle* result = new Puzzle;
+        result->state = node->state;
+        int pos = result->findEmpty();
+        int temp = result->state[pos - 1];
+        //cout << "temp:"<<temp<<"\n";
+        result->state[pos - 1] = result->state[pos];
+        result->state[pos] = temp;
+        return result;
+    }
+    return NULL;
+}
+Puzzle* Puzzle::move_right(Puzzle* node) {
+    if (node->findEmpty() % 3 < 2) {
+        Puzzle* result = new Puzzle;
+        result->state = node->state;
+        int pos = result->findEmpty();
+        int temp = result->state[pos + 1];
+        //cout << "temp:"<<temp<<"\n";
+        result->state[pos + 1] = result->state[pos];
+        result->state[pos] = temp;
+        return result;
+    }
+    return NULL;
 }

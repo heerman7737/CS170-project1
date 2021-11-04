@@ -7,15 +7,29 @@
 using namespace std;
 
 class Puzzle {
-	vector<vector<int>> state;
+
+public:
+	vector<int> state;
 	int cost;
+	int h_cost;
+	int g_cost;
+	int prev;
 	Puzzle* parent;
+	Puzzle* up;
+	Puzzle* down;
+	Puzzle* left;
+	Puzzle* right;
+	int depth;
 public:
 	Puzzle();
-	void setPuzzle(vector<vector<int>> tile);
+	void setPuzzle(vector<int> tile);
 	void printPuzzle();
-	vector<char> move();
-
+	int findEmpty();
+	bool compare(Puzzle* p1, Puzzle* p2);
+	Puzzle* move_up(Puzzle*);
+	Puzzle* move_down(Puzzle*);
+	Puzzle* move_left(Puzzle*);
+	Puzzle* move_right(Puzzle*);
 };
 
 

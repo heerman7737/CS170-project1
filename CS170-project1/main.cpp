@@ -1,40 +1,70 @@
 #include <iostream>
 #include <vector>
 #include "puzzle.h"
+#include <map>
+#include <queue>
 using namespace std;
-bool goal(vector<vector<int>> a) {
-    bool result = true;
-    vector<vector<int>> pg{ {1,2,3},{4,5,6},{7,8,0} };
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            if (a[i][j] != pg[i][j]) {
-                result = false;
-                break;
-            }
-        }
+map<Puzzle*, bool> visited;
+bool isVisited(Puzzle* node) {
+    if (visited[node] == true) {
+        return true;
     }
-    return result;
+    return false;
 }
-Puzzle puzzle;
+bool goal(Puzzle* node) {
+
+    vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
+    if (node->state == pg) {
+        return true;
+    }
+    return false;
+}
+int misplaced_tile(vector<int> a) {
+    return 0;
+
+}
+int manhattan(vector<int> a)
+{
+    return 0;
+}
+void general_search(Puzzle* root, int algorithm) {
+    priority_queue<Puzzle*> q;
+    q.push(root);
+    while (1) {
+        if (q.empty()) {
+            cout << "Failure";
+            break;
+        }
+
+    }
+}
 int main()
 {
-
-    vector<vector<int>> tile;
+    Puzzle* puzzle = new Puzzle;
+    vector<int> tile;
+    Puzzle* gol = new Puzzle;
     int temp;
     cout << "Welcome to my 8-puzzle solver.\n";
     cout << "Enter your puzzle in the following format: 0 1 2 3 4 5 6 7 8 9\n";
-    for (int i = 0; i < 3; i++) {
-        tile.push_back(vector<int>());
-        for (int j = 0; j < 3; j++) {
-            cin >> temp;
-            tile[i].push_back(temp);
-        }
+    for (int i = 0; i < 9; i++) {
+        cin >> temp;
+        tile.push_back(temp);
     }
-    puzzle.setPuzzle(tile);
-    vector<char> all_move = puzzle.move();
-    puzzle.printPuzzle();
-    for (int i = 0; i < all_move.size(); i++) {
-        cout << all_move[i] << " ";
-    }
+    puzzle->setPuzzle(tile);
+    int choice;
+    cout << "Choose algorithm, 1 for Uniform Cost Search, 2 for A* Misplaced Tile, 3 for A* Manhattan Dist\n";
+    cin >> choice;
+    cout << choice;
+    //puzzle->printPuzzle();
+    //cout<<puzzle->findEmpty();
+    //cout << goal(puzzle)<<"\n";
+
+    //if (isVisited(puzzle)) {
+    //    cout << " Has been visited";
+    //}
+    //gol->move_up(puzzle)->printPuzzle();
+    //gol->move_down(puzzle)->printPuzzle();
+    //gol->move_left(puzzle)->printPuzzle();
+    //gol->move_right(puzzle)->printPuzzle();
     return 0;
 }
