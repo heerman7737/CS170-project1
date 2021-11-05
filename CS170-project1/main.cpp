@@ -4,6 +4,7 @@
 #include <map>
 #include <queue>
 #include <stack>
+#include <chrono>
 using namespace std;
 
 auto it = [](const Puzzle* a, const Puzzle* b) {
@@ -20,6 +21,7 @@ map<vector<int>, bool> visited;
 priority_queue <Puzzle*, vector<Puzzle*>, decltype(it)> Q(it);
 stack<Puzzle*> path;
 vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
+int ixp = 0;
 bool isVisited(vector<int> node) {
     if (visited.find(node) != visited.end()) {
         return true;
@@ -97,6 +99,7 @@ void general_search(Puzzle* root, int algorithm) {
         if (goal(top)) {
             cout << "Found\n";
             cout << "H_cost: " << top->h_cost << "\nG_cost: " << top->g_cost;
+            path_taken(top);
             Q.pop();
             break;
         }
@@ -108,28 +111,28 @@ void general_search(Puzzle* root, int algorithm) {
                     pu->h_cost = 0;
                     Q.push(pu);
                     visited.insert(pair<vector<int>, bool>(pu->state, true));
-
+                    ixp++;
                 }
                 if (top->move_down() != NULL && !isVisited(top->move_down()->state)) {
                     pd = new Puzzle(top->move_down());
                     pd->h_cost = 0;
                     Q.push(pd);
                     visited.insert(pair<vector<int>, bool>(pd->state, true));
-
+                    ixp++;
                 }
                 if (top->move_left() != NULL && !isVisited(top->move_left()->state)) {
                     pl = new Puzzle(top->move_left());
                     pl->h_cost = 0;
                     Q.push(pl);
                     visited.insert(pair<vector<int>, bool>(pl->state, true));
-
+                    ixp++;
                 }
                 if (top->move_right() != NULL && !isVisited(top->move_right()->state)) {
                     pr = new Puzzle(top->move_right());
                     pr->h_cost = 0;
                     Q.push(pr);
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
-
+                    ixp++;
                 }
             }
             else if (algorithm == 2) {
@@ -138,28 +141,28 @@ void general_search(Puzzle* root, int algorithm) {
                     pu->h_cost = misplaced_tile(pu->state);
                     Q.push(pu);
                     visited.insert(pair<vector<int>, bool>(pu->state, true));
- 
+                    ixp++;
                 }
                 if (top->move_down() != NULL && !isVisited(top->move_down()->state)) {
                     pd = new Puzzle(top->move_down());
                     pd->h_cost = misplaced_tile(pd->state);
                     Q.push(pd);
                     visited.insert(pair<vector<int>, bool>(pd->state, true));
-
+                    ixp++;
                 }
                 if (top->move_left() != NULL && !isVisited(top->move_left()->state)) {
                     pl = new Puzzle(top->move_left());
                     pl->h_cost = misplaced_tile(pl->state);
                     Q.push(pl);
                     visited.insert(pair<vector<int>, bool>(pl->state, true));
-                  
+                    ixp++;
                 }
                 if (top->move_right() != NULL && !isVisited(top->move_right()->state)) {
                     pr = new Puzzle(top->move_right());
                     pr->h_cost = misplaced_tile(pr->state);
                     Q.push(pr);
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
-                    
+                    ixp++;
                 }
             }
             else if (algorithm == 3) {
@@ -168,28 +171,28 @@ void general_search(Puzzle* root, int algorithm) {
                     pu->h_cost = manhattan(pu->state);
                     Q.push(pu);
                     visited.insert(pair<vector<int>, bool>(pu->state, true));
-                    
+                    ixp++;
                 }
                 if (top->move_down() != NULL && !isVisited(top->move_down()->state)) {
                     pd = new Puzzle(top->move_down());
                     pd->h_cost = manhattan(pd->state);
                     Q.push(pd);
                     visited.insert(pair<vector<int>, bool>(pd->state, true));
-                    
+                    ixp++;
                 }
                 if (top->move_left() != NULL && !isVisited(top->move_left()->state)) {
                     pl = new Puzzle(top->move_left());
                     pl->h_cost = manhattan(pl->state);
                     Q.push(pl);
                     visited.insert(pair<vector<int>, bool>(pl->state, true));
-                    
+                    ixp++;
                 }
                 if (top->move_right() != NULL && !isVisited(top->move_right()->state)) {
                     pr = new Puzzle(top->move_right());
                     pr->h_cost = manhattan(pr->state);
                     Q.push(pr);
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
-                    
+                    ixp++;
                 }
             }
         }
@@ -213,7 +216,12 @@ int main()
     int choice;
     cout << "Choose algorithm, 1 for Uniform Cost Search, 2 for A* Misplaced Tile, 3 for A* Manhattan Dist\n";
     cin >> choice;
+    auto begin = chrono::high_resolution_clock::now();
     general_search(puzzle, choice);
+    auto end = chrono::high_resolution_clock::now();
+    auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+    printf("Execution Time: %.3f seconds.\n", elapsed.count() * 1e-9);
+    cout << "Number of expanded node: " << ixp;
     //cout << "Manhattan cost:" << manhattan(tile);
     //cout << "\n";
     //cout << "Misplaced cost:" << misplaced_tile(tile);

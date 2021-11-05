@@ -14,10 +14,7 @@ public:
 	int h_cost;
 	int g_cost;
 	Puzzle* parent;
-	Puzzle* up;
-	Puzzle* down;
-	Puzzle* left;
-	Puzzle* right;
+
 public:
 	Puzzle();
 	Puzzle(vector<int>);
