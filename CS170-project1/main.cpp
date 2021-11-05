@@ -12,11 +12,11 @@ using namespace std;
 
 auto it = [](const Puzzle* a, const Puzzle* b) {
 
-    if (a->h_cost + a->g_cost > b->h_cost + b->g_cost) {
-        return true;
+    if (a->h_cost + a->g_cost == b->h_cost + b->g_cost) {
+        return a->g_cost > b->g_cost;
     }
     else {
-        return false;
+        return a->h_cost + a->g_cost > b->h_cost + b->g_cost;
     }
 
 };
