@@ -54,8 +54,8 @@ int misplaced_tile(vector<int> a) {
     int cost = 0;
     for (int i = 0; i < 9; i++) {
 
-        if (a[i] == 0) continue;
-        if (a[i] != i + 1) {
+        if (a[i] == 48) continue;
+        if (a[i] != pg[i]) {
             cost++;
         }
 
