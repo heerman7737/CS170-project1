@@ -3,6 +3,7 @@
 #include "puzzle.h"
 #include <map>
 #include <queue>
+#include <stack>
 using namespace std;
 
 auto it = [](const Puzzle* a, const Puzzle* b) {
@@ -17,6 +18,7 @@ auto it = [](const Puzzle* a, const Puzzle* b) {
 };
 map<vector<int>, bool> visited;
 priority_queue <Puzzle*, vector<Puzzle*>, decltype(it)> Q(it);
+stack<Puzzle*> path;
 vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
 bool isVisited(vector<int> node) {
     if (visited.find(node) != visited.end()) {
@@ -31,6 +33,17 @@ bool goal(Puzzle* node) {
         return true;
     }
     return false;
+}
+void path_taken(Puzzle* ans) {
+
+    while (ans != NULL) {
+        path.push(ans);
+        ans = ans->parent;
+    }
+    while (!path.empty()) {
+        path.top()->printPuzzle();
+        path.pop();
+    }
 }
 int misplaced_tile(vector<int> a) {
     int cost = 0;
