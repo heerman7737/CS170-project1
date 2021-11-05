@@ -1,10 +1,10 @@
 #include "puzzle.h"
 #include <vector>
 #include <iostream>
+#include <sstream>
 using namespace std;
 Puzzle::Puzzle() {
     state = {};
-    cost = 0;
     h_cost = 0;
     g_cost = 0;
     parent = NULL;
@@ -12,7 +12,6 @@ Puzzle::Puzzle() {
 }
 Puzzle::Puzzle(vector<int> a) {
     state = a;
-    cost = 0;
     h_cost = 0;
     g_cost = 0;
     parent = NULL;
@@ -20,10 +19,9 @@ Puzzle::Puzzle(vector<int> a) {
 
 Puzzle::Puzzle(Puzzle* p) {
     state = p->state;
-    cost = p->cost;
     h_cost = p->h_cost;
     g_cost = p->g_cost;
-    parent = p;
+    parent = p->parent;
 
 }
 void Puzzle::setPuzzle(vector<int> tile) {
@@ -37,7 +35,14 @@ void Puzzle::printPuzzle() {
         for (int j = 0; j < 3; j++) {
             cout << "\n";
             for (int i = temp * 3; i < 3 * (temp + 1); i++) {
-                cout << state[i] << " ";
+
+                if (state[i] == 97) {
+                    cout << (char)('A') << " ";
+                }
+                else {
+                    cout << (char)state[i] << " ";
+                }
+
             }
             temp++;
         }
@@ -47,11 +52,27 @@ void Puzzle::printPuzzle() {
 
 int Puzzle::findEmpty() {
     for (int i = 0; i < 9; i++) {
-        if (state[i] == 0) {
+        if (state[i] == 48) {
             return i;
         }
     }
     return -1;
+}
+vector<int> Puzzle::findA() {
+    vector<int> result;
+    int al;
+    int an;
+    for (int i = 0; i < 9; i++) {
+        if (this->state[i] == 'A') {
+            al = i;
+        }
+        if (this->state[i] == 'a') {
+            an = i;
+        }
+    }
+    result.push_back(al);
+    result.push_back(an);
+    return result;
 }
 
 bool Puzzle::compare(Puzzle* p1, Puzzle* p2) {
@@ -77,7 +98,7 @@ Puzzle* Puzzle::move_up() {
         result->state[pos] = temp;
         result->g_cost = this->g_cost + 1;
         result->h_cost = this->h_cost;
-        result->cost = this->cost;
+        result->parent = this;
         return result;
     }
     return NULL;
@@ -93,7 +114,7 @@ Puzzle* Puzzle::move_down() {
         result->state[pos] = temp;
         result->g_cost = this->g_cost + 1;
         result->h_cost = this->h_cost;
-        result->cost = this->cost;
+        result->parent = this;
         return result;
     }
     return NULL;
@@ -109,7 +130,7 @@ Puzzle* Puzzle::move_left() {
         result->state[pos] = temp;
         result->g_cost = this->g_cost + 1;
         result->h_cost = this->h_cost;
-        result->cost = this->cost;
+        result->parent = this;
         return result;
     }
     return NULL;
@@ -125,8 +146,22 @@ Puzzle* Puzzle::move_right() {
         result->state[pos] = temp;
         result->g_cost = this->g_cost + 1;
         result->h_cost = this->h_cost;
-        result->cost = this->cost;
+        result->parent = this;
         return result;
     }
+    return NULL;
+}
+Puzzle* Puzzle::swapA() {
+
+    Puzzle* result = new Puzzle;
+    vector<int> apos(this->findA());
+    result->state = this->state;
+    result->state[apos[0]] = this->state[apos[1]];
+    result->state[apos[1]] = this->state[apos[0]];
+    result->g_cost = this->g_cost;
+    result->h_cost = this->h_cost;
+    result->parent = this->parent;
+    return result;
+
     return NULL;
 }

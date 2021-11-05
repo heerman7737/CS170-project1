@@ -10,11 +10,9 @@ class Puzzle {
 
 public:
 	vector<int> state;
-	int cost;
 	int h_cost;
 	int g_cost;
 	Puzzle* parent;
-
 public:
 	Puzzle();
 	Puzzle(vector<int>);
@@ -22,11 +20,13 @@ public:
 	void setPuzzle(vector<int> tile);
 	void printPuzzle();
 	int findEmpty();
+	vector<int> findA();
 	bool compare(Puzzle* p1, Puzzle* p2);
 	Puzzle* move_up();
 	Puzzle* move_down();
 	Puzzle* move_left();
 	Puzzle* move_right();
+	Puzzle* swapA();
 };
 
 

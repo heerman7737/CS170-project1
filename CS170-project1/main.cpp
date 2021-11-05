@@ -1,3 +1,6 @@
+// 8puzzle.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
 #include <iostream>
 #include <vector>
 #include "puzzle.h"
@@ -9,7 +12,7 @@ using namespace std;
 
 auto it = [](const Puzzle* a, const Puzzle* b) {
 
-    if (a->h_cost + a->g_cost > b->h_cost + a->g_cost) {
+    if (a->h_cost + a->g_cost > b->h_cost + b->g_cost) {
         return true;
     }
     else {
@@ -20,7 +23,7 @@ auto it = [](const Puzzle* a, const Puzzle* b) {
 map<vector<int>, bool> visited;
 priority_queue <Puzzle*, vector<Puzzle*>, decltype(it)> Q(it);
 stack<Puzzle*> path;
-vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
+vector<int> pg{ 'A','N','G','E','L','I','C','a',48 };
 int ixp = 0;
 bool isVisited(vector<int> node) {
     if (visited.find(node) != visited.end()) {
@@ -59,16 +62,17 @@ int misplaced_tile(vector<int> a) {
     }
     return cost;
 
-
 }
 int manhattan(vector<int> a)
 {
     int cost = 0;
     for (int i = 0; i < 9; ++i)
     {
-        if (a[i] != 0) {
+        if (a[i] != 48) {
+
             auto it = find(pg.begin(), pg.end(), a[i]);
             int goal = it - pg.begin();
+
             int goal_x = goal % 3;
             int goal_y = goal / 3;
 
@@ -86,6 +90,7 @@ void general_search(Puzzle* root, int algorithm) {
     Puzzle* pd;
     Puzzle* pr;
     Puzzle* pl;
+    Puzzle* ps;
     visited.insert(pair<vector<int>, bool>(root->state, true));
 
     Q.push(root);
@@ -134,6 +139,13 @@ void general_search(Puzzle* root, int algorithm) {
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
                     ixp++;
                 }
+                if (top->swapA() != NULL && !isVisited(top->swapA()->state)) {
+                    ps = new Puzzle(top->swapA());
+                    ps->h_cost = 0;
+                    Q.push(ps);
+                    visited.insert(pair<vector<int>, bool>(ps->state, true));
+                    ixp++;
+                }
             }
             else if (algorithm == 2) {
                 if (top->move_up() != NULL && !isVisited(top->move_up()->state)) {
@@ -162,6 +174,13 @@ void general_search(Puzzle* root, int algorithm) {
                     pr->h_cost = misplaced_tile(pr->state);
                     Q.push(pr);
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
+                    ixp++;
+                }
+                if (top->swapA() != NULL && !isVisited(top->swapA()->state)) {
+                    ps = new Puzzle(top->swapA());
+                    ps->h_cost = misplaced_tile(ps->state);
+                    Q.push(ps);
+                    visited.insert(pair<vector<int>, bool>(ps->state, true));
                     ixp++;
                 }
             }
@@ -194,6 +213,13 @@ void general_search(Puzzle* root, int algorithm) {
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
                     ixp++;
                 }
+                if (top->swapA() != NULL && !isVisited(top->swapA()->state)) {
+                    ps = new Puzzle(top->swapA());
+                    ps->h_cost = manhattan(ps->state);
+                    Q.push(ps);
+                    visited.insert(pair<vector<int>, bool>(ps->state, true));
+                    ixp++;
+                }
             }
         }
 
@@ -202,43 +228,63 @@ void general_search(Puzzle* root, int algorithm) {
 int main()
 {
     Puzzle* puzzle = new Puzzle;
-    //Puzzle* gol;
+
     vector<int> tile;
     Puzzle* gol = new Puzzle;
-    int temp;
+    char temp;
     cout << "Welcome to my 8-puzzle solver.\n";
     cout << "Enter your puzzle in the following format: 0 1 2 3 4 5 6 7 8 9\n";
     for (int i = 0; i < 9; i++) {
         cin >> temp;
         tile.push_back(temp);
+
     }
     puzzle->setPuzzle(tile);
     int choice;
-    cout << "Choose algorithm, 1 for Uniform Cost Search, 2 for A* Misplaced Tile, 3 for A* Manhattan Dist\n";
+    cout << "Choose your algorithm:\n";
+    cout << "Enter 1. Uniform Cost Search\n";
+    cout << "Enter 2. A* with Misplaced Tile Heuristics\n";
+    cout << "Enter 3. A* with Manhattan Distance Heuristics\n";
     cin >> choice;
     auto begin = chrono::high_resolution_clock::now();
+    //puzzle->printPuzzle();
     general_search(puzzle, choice);
+    //cout << isSolvable(puzzle->state);
+    //cout<<goal(puzzle);
     auto end = chrono::high_resolution_clock::now();
     auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
     printf("Execution Time: %.3f seconds.\n", elapsed.count() * 1e-9);
-    cout << "Number of expanded node: " << ixp;
+    //cout << "Number of expanded node: " << ixp;
+
+    //vector<int> l(puzzle->findA());
+    //for (int i = 0; i < 2; i++) {
+    //    cout << l[i]<<" ";
+    //}
     //cout << "Manhattan cost:" << manhattan(tile);
     //cout << "\n";
     //cout << "Misplaced cost:" << misplaced_tile(tile);
     //cout << goal(puzzle)<<"\n";
-    //Q.push(puzzle);
-    //cout << choice;
 
-    //puzzle->printPuzzle();
-    //cout<<puzzle->findEmpty();
-    //cout << goal(puzzle)<<"\n";
-    
     //if (isVisited(puzzle)) {
     //    cout << " Has been visited";
     //}
-    //gol->move_up()->printPuzzle();
-    //gol->move_down()->printPuzzle();
-    //gol->move_left()->printPuzzle();
-    //gol->move_right()->printPuzzle();
+    //puzzle->move_up()->printPuzzle();
+    //puzzle->move_down()->printPuzzle();
+    //puzzle->move_left()->printPuzzle();
+    //puzzle->move_right()->printPuzzle();
+    //cout<<goal((puzzle->swapA()));
+    //Puzzle* pu = new Puzzle(puzzle->move_up());
+    //pu->printPuzzle();
+    //cout << pu->g_cost;
+    //pu->parent->printPuzzle();
+    //Puzzle* pd = new Puzzle(pu->move_down());
+    //pd->printPuzzle();
+    //cout << pu->cost;
+    //visited.insert(pair<vector<int>,bool>(puzzle->state,true));
+    //if (isVisited(pd->state)) {
+    //    cout << "Visited\n ";
+    //}
     return 0;
 }
+
+
