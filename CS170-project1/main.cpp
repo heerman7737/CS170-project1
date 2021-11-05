@@ -17,7 +17,7 @@ auto it = [](const Puzzle* a, const Puzzle* b) {
 };
 map<Puzzle*, bool> visited;
 priority_queue <Puzzle*, vector<Puzzle*>, decltype(it)> Q(it);
-
+vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
 bool isVisited(Puzzle* node) {
     if (visited[node] == true) {
         return true;
@@ -26,19 +26,45 @@ bool isVisited(Puzzle* node) {
 }
 bool goal(Puzzle* node) {
 
-    vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
+
     if (node->state == pg) {
         return true;
     }
     return false;
 }
 int misplaced_tile(vector<int> a) {
-    return 0;
+    int cost = 0;
+    for (int i = 0; i < 9; i++) {
+
+        if (a[i] == 0) continue;
+        if (a[i] != i + 1) {
+            cost++;
+        }
+
+    }
+    return cost;
+
 
 }
 int manhattan(vector<int> a)
 {
-    return 0;
+    int cost = 0;
+    for (int i = 0; i < 9; ++i)
+    {
+        if (a[i] != 0) {
+            auto it = find(pg.begin(), pg.end(), a[i]);
+            int goal = it - pg.begin();
+            int goal_x = goal % 3;
+            int goal_y = goal / 3;
+
+            int curr_x = i % 3;
+            int curr_y = i / 3;
+
+            cost += abs(curr_x - goal_x) + abs(curr_y - goal_y);
+        }
+
+    }
+    return cost;
 }
 void general_search(Puzzle* root, int algorithm) {
 
@@ -91,6 +117,10 @@ int main()
     cout << "Choose algorithm, 1 for Uniform Cost Search, 2 for A* Misplaced Tile, 3 for A* Manhattan Dist\n";
     cin >> choice;
     general_search(puzzle, choice);
+    //cout << "Manhattan cost:" << manhattan(tile);
+    //cout << "\n";
+    //cout << "Misplaced cost:" << misplaced_tile(tile);
+    //cout << goal(puzzle)<<"\n";
     //Q.push(puzzle);
     //cout << choice;
 
