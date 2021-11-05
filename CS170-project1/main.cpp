@@ -50,6 +50,23 @@ void path_taken(Puzzle* ans) {
         path.pop();
     }
 }
+bool isSolvable(vector<int> a) {
+
+    int inversion = 0;
+    for (int i = 0; i < 8; i++) {
+        for (int j = i + 1; j < 9; j++) {
+            auto it = find(pg.begin(), pg.end(), a[i]);
+            int goal = it - pg.begin();
+            auto cit = find(pg.begin(), pg.end(), a[j]);
+            int cgoal = cit - pg.begin();
+            if (a[i] == 48 || a[j] == 48) continue;
+            if (goal > cgoal) {
+                inversion++;
+            }
+        }
+    }
+    return inversion % 2 == 0;
+}
 int misplaced_tile(vector<int> a) {
     int cost = 0;
     for (int i = 0; i < 9; i++) {
@@ -101,10 +118,10 @@ void general_search(Puzzle* root, int algorithm) {
     while (!Q.empty()) {
         top = Q.top();
 
-        if (goal(top)) {
+        if (goal(top) || goal(top->swapA())) {
             cout << "Found\n";
-            cout << "H_cost: " << top->h_cost << "\nG_cost: " << top->g_cost;
             path_taken(top);
+            cout << "H_cost: " << top->h_cost << "\nG_cost: " << top->g_cost;
             Q.pop();
             break;
         }
@@ -139,7 +156,7 @@ void general_search(Puzzle* root, int algorithm) {
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
                     ixp++;
                 }
-                if (top->swapA() != NULL && !isVisited(top->swapA()->state)) {
+                if (isSolvable(top->swapA()->state) && !isVisited(top->swapA()->state)) {
                     ps = new Puzzle(top->swapA());
                     ps->h_cost = 0;
                     Q.push(ps);
@@ -176,7 +193,7 @@ void general_search(Puzzle* root, int algorithm) {
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
                     ixp++;
                 }
-                if (top->swapA() != NULL && !isVisited(top->swapA()->state)) {
+                if (isSolvable(top->swapA()->state) && !isVisited(top->swapA()->state)) {
                     ps = new Puzzle(top->swapA());
                     ps->h_cost = misplaced_tile(ps->state);
                     Q.push(ps);
@@ -213,7 +230,7 @@ void general_search(Puzzle* root, int algorithm) {
                     visited.insert(pair<vector<int>, bool>(pr->state, true));
                     ixp++;
                 }
-                if (top->swapA() != NULL && !isVisited(top->swapA()->state)) {
+                if (isSolvable(top->swapA()->state) && !isVisited(top->swapA()->state)) {
                     ps = new Puzzle(top->swapA());
                     ps->h_cost = manhattan(ps->state);
                     Q.push(ps);
@@ -232,8 +249,8 @@ int main()
     vector<int> tile;
     Puzzle* gol = new Puzzle;
     char temp;
-    cout << "Welcome to my Angelica solver.\n";
-    cout << "Enter your puzzle in the following format: A N G E L I C a\n";
+    cout << "Welcome to my 8-puzzle solver.\n";
+    cout << "Enter your puzzle in the following format: 0 1 2 3 4 5 6 7 8 9\n";
     for (int i = 0; i < 9; i++) {
         cin >> temp;
         tile.push_back(temp);
@@ -248,14 +265,22 @@ int main()
     cin >> choice;
     auto begin = chrono::high_resolution_clock::now();
     //puzzle->printPuzzle();
-    general_search(puzzle, choice);
+    if (isSolvable(puzzle->state)) {
+        general_search(puzzle, choice);
+    }
+    else if (isSolvable(puzzle->swapA()->state)) {
+        puzzle = puzzle->swapA();
+        general_search(puzzle, choice);
+    }
+
     //cout << isSolvable(puzzle->state);
     //cout<<goal(puzzle);
     auto end = chrono::high_resolution_clock::now();
     auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin);
+    cout << "\n";
     printf("Execution Time: %.3f seconds.\n", elapsed.count() * 1e-9);
-    //cout << "Number of expanded node: " << ixp;
-
+    cout << "Number of expanded node: " << ixp;
+    //cout << isSolvable(puzzle->state);
     //vector<int> l(puzzle->findA());
     //for (int i = 0; i < 2; i++) {
     //    cout << l[i]<<" ";
