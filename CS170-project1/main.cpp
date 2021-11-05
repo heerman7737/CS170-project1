@@ -232,8 +232,8 @@ int main()
     vector<int> tile;
     Puzzle* gol = new Puzzle;
     char temp;
-    cout << "Welcome to my 8-puzzle solver.\n";
-    cout << "Enter your puzzle in the following format: 0 1 2 3 4 5 6 7 8 9\n";
+    cout << "Welcome to my Angelica solver.\n";
+    cout << "Enter your puzzle in the following format: A N G E L I C a\n";
     for (int i = 0; i < 9; i++) {
         cin >> temp;
         tile.push_back(temp);
