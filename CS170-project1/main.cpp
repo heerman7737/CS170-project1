@@ -15,11 +15,11 @@ auto it = [](const Puzzle* a, const Puzzle* b) {
     }
 
 };
-map<Puzzle*, bool> visited;
+map<vector<int>, bool> visited;
 priority_queue <Puzzle*, vector<Puzzle*>, decltype(it)> Q(it);
 vector<int> pg{ 1,2,3,4,5,6,7,8,0 };
-bool isVisited(Puzzle* node) {
-    if (visited[node] == true) {
+bool isVisited(vector<int> node) {
+    if (visited.find(node) != visited.end()) {
         return true;
     }
     return false;
@@ -67,33 +67,117 @@ int manhattan(vector<int> a)
     return cost;
 }
 void general_search(Puzzle* root, int algorithm) {
+    Puzzle* pu;
+    Puzzle* pd;
+    Puzzle* pr;
+    Puzzle* pl;
+    visited.insert(pair<vector<int>, bool>(root->state, true));
 
-    visited.insert(pair<Puzzle*, bool>(root, true));
     Q.push(root);
     //Puzzle* top = new Puzzle(Q.top());
     //top->printPuzzle();
     //cout << "\n Visited:" << isVisited(root);
-    Puzzle* top = new Puzzle(Q.top());
-    vector<Puzzle*> moves;
+    Puzzle* top = new Puzzle();
     while (!Q.empty()) {
         top = Q.top();
-        cout << "Depth " << top->g_cost;
+
         if (goal(top)) {
-            top->printPuzzle();
-            cout << "Found";
+            cout << "Found\n";
+            cout << "H_cost: " << top->h_cost << "\nG_cost: " << top->g_cost;
             Q.pop();
             break;
         }
         else {
             Q.pop();
             if (algorithm == 1) {
+                if (top->move_up() != NULL && !isVisited(top->move_up()->state)) {
+                    pu = new Puzzle(top->move_up());
+                    pu->h_cost = 0;
+                    Q.push(pu);
+                    visited.insert(pair<vector<int>, bool>(pu->state, true));
 
+                }
+                if (top->move_down() != NULL && !isVisited(top->move_down()->state)) {
+                    pd = new Puzzle(top->move_down());
+                    pd->h_cost = 0;
+                    Q.push(pd);
+                    visited.insert(pair<vector<int>, bool>(pd->state, true));
+
+                }
+                if (top->move_left() != NULL && !isVisited(top->move_left()->state)) {
+                    pl = new Puzzle(top->move_left());
+                    pl->h_cost = 0;
+                    Q.push(pl);
+                    visited.insert(pair<vector<int>, bool>(pl->state, true));
+
+                }
+                if (top->move_right() != NULL && !isVisited(top->move_right()->state)) {
+                    pr = new Puzzle(top->move_right());
+                    pr->h_cost = 0;
+                    Q.push(pr);
+                    visited.insert(pair<vector<int>, bool>(pr->state, true));
+
+                }
             }
             else if (algorithm == 2) {
+                if (top->move_up() != NULL && !isVisited(top->move_up()->state)) {
+                    pu = new Puzzle(top->move_up());
+                    pu->h_cost = misplaced_tile(pu->state);
+                    Q.push(pu);
+                    visited.insert(pair<vector<int>, bool>(pu->state, true));
+ 
+                }
+                if (top->move_down() != NULL && !isVisited(top->move_down()->state)) {
+                    pd = new Puzzle(top->move_down());
+                    pd->h_cost = misplaced_tile(pd->state);
+                    Q.push(pd);
+                    visited.insert(pair<vector<int>, bool>(pd->state, true));
 
+                }
+                if (top->move_left() != NULL && !isVisited(top->move_left()->state)) {
+                    pl = new Puzzle(top->move_left());
+                    pl->h_cost = misplaced_tile(pl->state);
+                    Q.push(pl);
+                    visited.insert(pair<vector<int>, bool>(pl->state, true));
+                  
+                }
+                if (top->move_right() != NULL && !isVisited(top->move_right()->state)) {
+                    pr = new Puzzle(top->move_right());
+                    pr->h_cost = misplaced_tile(pr->state);
+                    Q.push(pr);
+                    visited.insert(pair<vector<int>, bool>(pr->state, true));
+                    
+                }
             }
             else if (algorithm == 3) {
-
+                if (top->move_up() != NULL && !isVisited(top->move_up()->state)) {
+                    pu = new Puzzle(top->move_up());
+                    pu->h_cost = manhattan(pu->state);
+                    Q.push(pu);
+                    visited.insert(pair<vector<int>, bool>(pu->state, true));
+                    
+                }
+                if (top->move_down() != NULL && !isVisited(top->move_down()->state)) {
+                    pd = new Puzzle(top->move_down());
+                    pd->h_cost = manhattan(pd->state);
+                    Q.push(pd);
+                    visited.insert(pair<vector<int>, bool>(pd->state, true));
+                    
+                }
+                if (top->move_left() != NULL && !isVisited(top->move_left()->state)) {
+                    pl = new Puzzle(top->move_left());
+                    pl->h_cost = manhattan(pl->state);
+                    Q.push(pl);
+                    visited.insert(pair<vector<int>, bool>(pl->state, true));
+                    
+                }
+                if (top->move_right() != NULL && !isVisited(top->move_right()->state)) {
+                    pr = new Puzzle(top->move_right());
+                    pr->h_cost = manhattan(pr->state);
+                    Q.push(pr);
+                    visited.insert(pair<vector<int>, bool>(pr->state, true));
+                    
+                }
             }
         }
 
